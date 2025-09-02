@@ -52,36 +52,89 @@ class Board {
       cells[y][x] = cellType;
       return true;
     }
+
     return false;
   }
 
-  // todo сделать проверку победы при условии 4 в ряд
-  bool checkWin(Cell player) {
-    for (int i = 0; i < size; i++) {
-      if (cells[i].every((cell) => cell == player)) {
-        return true;
-      }
-
-      if (cells.every((row) => row[i] == player)) {
-        return true;
-      }
-    }
-
-    if (List.generate(
-      size,
-      (i) => cells[i][i],
-    ).every((cell) => cell == player)) {
+  bool checkWin(Cell player, {int winLength = 4}) {
+    // Проверка горизонталей
+    if (_checkLines(player, winLength)) {
       return true;
     }
 
-    if (List.generate(
-      size,
-      (i) => cells[i][size - i - 1],
-    ).every((cell) => cell == player)) {
+    // Проверка вертикалей (вращаем матрицу и проверяем снова)
+    var rotated = rotateMatrix(cells);
+    if (_checkLinesInMatrix(rotated, player, winLength)) {
       return true;
+    }
+
+    // Проверка диагоналей через 4 поворота
+    for (int i = 0; i < 4; i++) {
+      if (_checkDiagonals(rotated, player, winLength)) {
+        return true;
+      }
+
+      rotated = rotateMatrix(rotated);
     }
 
     return false;
+  }
+
+  // Проверка строк
+  bool _checkLines(Cell player, int winLength) {
+    return _checkLinesInMatrix(cells, player, winLength);
+  }
+
+  bool _checkLinesInMatrix(
+    List<List<Cell>> matrix,
+    Cell player,
+    int winLength,
+  ) {
+    for (var row in matrix) {
+      int count = 0;
+
+      for (var cell in row) {
+        count = (cell == player) ? count + 1 : 0;
+
+        if (count == winLength) {
+          return true;
+        }
+      }
+    }
+
+    return false;
+  }
+
+  // Проверка ↘ диагоналей
+  bool _checkDiagonals(List<List<Cell>> matrix, Cell player, int winLength) {
+    for (int startRow = winLength - 1; startRow < size; startRow++) {
+      int i = startRow;
+      int j = 0;
+      int count = 0;
+
+      while (i >= 0 && j < size) {
+        count = (matrix[i][j] == player) ? count + 1 : 0;
+
+        if (count == winLength) {
+          return true;
+        }
+
+        i--;
+        j++;
+      }
+    }
+    return false;
+  }
+
+  // Поворот матрицы на 90° по часовой стрелке
+  List<List<Cell>> rotateMatrix(List<List<Cell>> matrix) {
+    return List.generate(
+      size,
+      (i) => List.generate(
+        size,
+        (j) => matrix[size - j - 1][i],
+      ),
+    );
   }
 
   bool checkDraw() {
