@@ -33,6 +33,8 @@ class Board {
             stdout.write('X ');
           case Cell.nought:
             stdout.write('O ');
+          case Cell.zet:
+            stdout.write('Z ');
         }
       }
       print('');
@@ -53,20 +55,29 @@ class Board {
 
   bool checkWin(Cell player) {
     for (int i = 0; i < size; i++) {
-      if (cells[i].every((cell) => cell == player)) return true;
-      if (cells.every((row) => row[i] == player)) return true;
+      if (cells[i].every((cell) => cell == player)) {
+        return true;
+      }
+
+      if (cells.every((row) => row[i] == player)) {
+        return true;
+      }
     }
-    if (List.generate(size, (i) => cells[i][i]).every(
-      (cell) => cell == player,
-    )) {
+
+    if (List.generate(
+      size,
+      (i) => cells[i][i],
+    ).every((cell) => cell == player)) {
       return true;
     }
+
     if (List.generate(
       size,
       (i) => cells[i][size - i - 1],
     ).every((cell) => cell == player)) {
       return true;
     }
+
     return false;
   }
 

@@ -3,7 +3,6 @@ import 'dart:io';
 import '../tic_tac_toe.dart';
 import 'game_state.dart';
 
-
 class Game {
   final Board board;
   final Player currentPlayer;
@@ -34,21 +33,26 @@ class Game {
 
       while (!validInput) {
         String? input = stdin.readLineSync();
+
         if (input == null) {
           print("Invalid input. Please try again.");
           continue;
         }
+
         if (input == 'q') {
           state = GameState.quit;
           break;
         }
+
         var inputList = input.split(' ');
         if (inputList.length != 2) {
           print("Invalid input. Please try again.");
           continue;
         }
+
         x = int.tryParse(inputList[1]);
         y = int.tryParse(inputList[0]);
+
         if (x == null ||
             y == null ||
             x < 1 ||
@@ -58,8 +62,10 @@ class Game {
           print("Invalid input. Please try again.");
           continue;
         }
+
         x -= 1;
         y -= 1;
+
         if (board.setSymbol(x, y, currentPlayer.cellType)) {
           updateState();
           currentPlayer.switchPlayer();

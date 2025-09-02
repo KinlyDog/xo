@@ -3,5 +3,6 @@ enum GameState {
   draw,
   crossWin,
   noughtWin,
+  zetWin,
   quit,
 }

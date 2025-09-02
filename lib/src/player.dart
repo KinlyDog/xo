@@ -9,5 +9,10 @@ class Player {
     cellType = cellType == Cell.cross ? Cell.nought : Cell.cross;
   }
 
-  String get symbol => cellType == Cell.cross ? 'X' : 'O';
+  String get symbol => switch (cellType) {
+    Cell.cross => 'X',
+    Cell.nought => 'O',
+    Cell.zet => 'Z',
+    Cell.empty => throw UnimplementedError('Поле не может быть пустым'),
+  };
 }

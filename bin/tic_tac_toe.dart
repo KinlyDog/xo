@@ -4,11 +4,13 @@ import 'package:xo/tic_tac_toe.dart';
 
 void main() {
   int? size;
+
   while (true) {
-    stdout.write('Enter the size of the board (3-9): ');
+    stdout.write('Enter the size of the board (5-9): ');
     size = int.tryParse(stdin.readLineSync()!);
-    size ??= 3;
-    if (size < 3 || size > 9) {
+    size ??= 5;
+
+    if (size < 5 || size > 9) {
       continue;
     }
     break;
