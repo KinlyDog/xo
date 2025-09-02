@@ -95,6 +95,7 @@ class Game {
     print('Do u wanna play again? Press Y or any key for exit');
     var input = stdin.readLineSync()!;
     if (input.toLowerCase() == 'y') {
+      state = GameState.playing;
       play();
     }
 
