@@ -15,6 +15,8 @@ class Game {
       state = GameState.crossWin;
     } else if (board.checkWin(Cell.nought)) {
       state = GameState.noughtWin;
+    } else if (board.checkWin(Cell.zet)) {
+      state = GameState.zetWin;
     } else if (board.checkDraw()) {
       state = GameState.draw;
     }
@@ -82,6 +84,8 @@ class Game {
         stdout.writeln('X wins!');
       case GameState.noughtWin:
         stdout.writeln('O wins!');
+      case GameState.zetWin:
+        stdout.writeln('Z wins!');
       case GameState.draw:
         stdout.writeln("It's a draw!");
       default:
