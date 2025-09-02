@@ -25,6 +25,7 @@ class Board {
 
     for (int i = 0; i < size; i++) {
       stdout.write('${i + 1} ');
+
       for (int j = 0; j < size; j++) {
         switch (cells[i][j]) {
           case Cell.empty:
@@ -37,6 +38,7 @@ class Board {
             stdout.write('Z ');
         }
       }
+
       print('');
     }
   }
@@ -53,6 +55,7 @@ class Board {
     return false;
   }
 
+  // todo сделать проверку победы при условии 4 в ряд
   bool checkWin(Cell player) {
     for (int i = 0; i < size; i++) {
       if (cells[i].every((cell) => cell == player)) {
