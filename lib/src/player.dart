@@ -6,13 +6,18 @@ class Player {
   Player(this.cellType);
 
   void switchPlayer() {
-    cellType = cellType == Cell.cross ? Cell.nought : Cell.cross;
+    cellType = switch (cellType) {
+      Cell.cross => Cell.nought,
+      Cell.nought => Cell.zet,
+      Cell.zet => Cell.cross,
+      _ => Cell.empty,
+    };
   }
 
   String get symbol => switch (cellType) {
     Cell.cross => 'X',
     Cell.nought => 'O',
     Cell.zet => 'Z',
-    Cell.empty => throw UnimplementedError('Поле не может быть пустым'),
+    _ => throw UnimplementedError('Неожиданное значение: $cellType'),
   };
 }
