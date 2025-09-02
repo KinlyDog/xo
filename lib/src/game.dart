@@ -91,5 +91,13 @@ class Game {
       default:
         break;
     }
+
+    print('Do u wanna play again? Press Y or any key for exit');
+    var input = stdin.readLineSync()!;
+    if (input.toLowerCase() == 'y') {
+      play();
+    }
+
+    print('Bye, bye!');
   }
 }
