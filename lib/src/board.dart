@@ -3,18 +3,14 @@ import 'dart:io';
 import 'cell_type.dart';
 
 class Board {
-  late List<List<Cell>> cells;
+  final List<List<Cell>> cells;
   final int size;
 
-  Board(this.size) {
-    cells = List.generate(
-      size,
-      (_) => List.filled(
+  Board(this.size)
+    : cells = List.generate(
         size,
-        Cell.empty,
-      ),
-    );
-  }
+        (_) => List.filled(size, Cell.empty),
+      );
 
   void printBoard() {
     stdout.write('  ');
@@ -43,12 +39,12 @@ class Board {
     }
   }
 
-  bool _makeMove(int x, int y) {
+  bool isCellEmpty(int x, int y) {
     return cells[y][x] == Cell.empty;
   }
 
   bool setSymbol(int x, int y, Cell cellType) {
-    if (_makeMove(x, y)) {
+    if (isCellEmpty(x, y)) {
       cells[y][x] = cellType;
       return true;
     }
@@ -57,84 +53,138 @@ class Board {
   }
 
   bool checkWin(Cell player, {int winLength = 4}) {
-    // Проверка горизонталей
-    if (_checkLines(player, winLength)) {
+    if (_checkRows(player, winLength)) {
       return true;
     }
 
-    // Проверка вертикалей (вращаем матрицу и проверяем снова)
-    var rotated = rotateMatrix(cells);
-    if (_checkLinesInMatrix(rotated, player, winLength)) {
+    if (_checkColumns(player, winLength)) {
       return true;
     }
 
-    // Проверка диагоналей через 4 поворота
-    for (int i = 0; i < 4; i++) {
-      if (_checkDiagonals(rotated, player, winLength)) {
+    if (_checkDiagonalsDownRight(player, winLength)) {
+      return true;
+    }
+
+    if (_checkDiagonalsUpRight(player, winLength)) {
+      return true;
+    }
+
+    return false;
+  }
+
+  bool _checkRows(Cell player, int winLength) {
+    for (int r = 0; r < size; r++) {
+      if (_hasConsecutive(cells[r], player, winLength)) {
         return true;
       }
-
-      rotated = rotateMatrix(rotated);
     }
 
     return false;
   }
 
-  // Проверка строк
-  bool _checkLines(Cell player, int winLength) {
-    return _checkLinesInMatrix(cells, player, winLength);
-  }
+  bool _checkColumns(Cell player, int winLength) {
+    for (int c = 0; c < size; c++) {
+      final column = List<Cell>.generate(
+        size,
+        (r) => cells[r][c],
+      );
 
-  bool _checkLinesInMatrix(
-    List<List<Cell>> matrix,
-    Cell player,
-    int winLength,
-  ) {
-    for (var row in matrix) {
-      int count = 0;
-
-      for (var cell in row) {
-        count = (cell == player) ? count + 1 : 0;
-
-        if (count == winLength) {
-          return true;
-        }
+      if (_hasConsecutive(column, player, winLength)) {
+        return true;
       }
     }
 
     return false;
   }
 
-  // Проверка ↘ диагоналей
-  bool _checkDiagonals(List<List<Cell>> matrix, Cell player, int winLength) {
-    for (int startRow = winLength - 1; startRow < size; startRow++) {
-      int i = startRow;
+  bool _checkDiagonalsDownRight(Cell player, int winLength) {
+    for (int r = 0; r < size; r++) {
+      int i = r;
       int j = 0;
-      int count = 0;
+      final diag = <Cell>[];
+
+      while (i < size && j < size) {
+        diag.add(cells[i][j]);
+        i++;
+        j++;
+      }
+
+      if (_hasConsecutive(diag, player, winLength)) {
+        return true;
+      }
+    }
+
+    for (int c = 1; c < size; c++) {
+      int i = 0;
+      int j = c;
+      final diag = <Cell>[];
+
+      while (i < size && j < size) {
+        diag.add(cells[i][j]);
+        i++;
+        j++;
+      }
+
+      if (_hasConsecutive(diag, player, winLength)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  bool _checkDiagonalsUpRight(Cell player, int winLength) {
+    for (int r = size - 1; r >= 0; r--) {
+      int i = r;
+      int j = 0;
+      final diag = <Cell>[];
 
       while (i >= 0 && j < size) {
-        count = (matrix[i][j] == player) ? count + 1 : 0;
-
-        if (count == winLength) {
-          return true;
-        }
-
+        diag.add(cells[i][j]);
         i--;
         j++;
       }
+
+      if (_hasConsecutive(diag, player, winLength)) {
+        return true;
+      }
     }
+
+    for (int c = 1; c < size; c++) {
+      int i = size - 1;
+      int j = c;
+      final diag = <Cell>[];
+
+      while (i >= 0 && j < size) {
+        diag.add(cells[i][j]);
+        i--;
+        j++;
+      }
+
+      if (_hasConsecutive(diag, player, winLength)) {
+        return true;
+      }
+    }
+
     return false;
   }
 
-  // Поворот матрицы на 90° по часовой стрелке
-  List<List<Cell>> rotateMatrix(List<List<Cell>> matrix) {
-    return List.generate(
-      size,
-      (i) => List.generate(
-        size,
-        (j) => matrix[size - j - 1][i],
-      ),
-    );
+  bool _hasConsecutive(List<Cell> sequence, Cell player, int winLength) {
+    int count = 0;
+
+    for (final cell in sequence) {
+      if (cell == player) {
+        count++;
+      } else {
+        count = 0;
+      }
+
+      if (count >= winLength) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   bool checkDraw() {
