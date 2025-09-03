@@ -30,13 +30,6 @@ class Game {
     newGame.play();
   }
 
-  void resetGame() {
-    Board resetBoard = Board(board.size);
-    Player resetPlayer = Player(Cell.cross);
-    Game resetGame = Game(resetBoard, resetPlayer);
-    resetGame.play();
-  }
-
   void updateState() {
     if (board.checkWin(Cell.cross)) {
       state = GameState.crossWin;
@@ -75,9 +68,7 @@ class Game {
 
         // сброс состояния, новая игра
         if (input == 'r') {
-          state = GameState.reset;
-          resetGame();
-          break;
+          return Game(Board(board.size), Player(Cell.cross)).play();
         }
 
         var inputList = input.split(' ');
@@ -112,10 +103,6 @@ class Game {
       }
     }
 
-    if (state == GameState.reset) {
-      return;
-    }
-
     board.printBoard();
     switch (state) {
       case GameState.crossWin:
@@ -131,9 +118,9 @@ class Game {
     }
 
     stdout.writeln('Do u wanna play again? Press Y or any key for exit.');
-    var input = stdin.readLineSync()!;
+    String again = stdin.readLineSync()!;
 
-    if (input.toLowerCase() == 'y') {
+    if (again.toLowerCase() == 'y') {
       newGame();
     } else {
       print('Bye, bye!');
