@@ -4,6 +4,6 @@ enum GameState {
   crossWin,
   noughtWin,
   zetWin,
-  newGame,
+  reset,
   quit,
 }
