@@ -10,7 +10,7 @@ class Player {
       Cell.cross => Cell.nought,
       Cell.nought => Cell.zet,
       Cell.zet => Cell.cross,
-      _ => Cell.empty,
+      _ => throw StateError('Unexpected player state: $cellType'),
     };
   }
 
