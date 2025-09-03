@@ -63,10 +63,9 @@ class Game {
 
         if (input == 'q') {
           state = GameState.quit;
-          break;
+          return;
         }
 
-        // сброс состояния, новая игра
         if (input == 'r') {
           return Game(Board(board.size), Player(Cell.cross)).play();
         }
