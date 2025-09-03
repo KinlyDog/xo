@@ -10,6 +10,26 @@ class Game {
 
   Game(this.board, this.currentPlayer);
 
+  static void newGame() {
+    int? size;
+
+    while (true) {
+      stdout.write('Enter the size of the board (5-9): ');
+      size = int.tryParse(stdin.readLineSync()!);
+      size ??= 5;
+
+      if (size < 5 || size > 9) {
+        continue;
+      }
+      break;
+    }
+
+    Board newBoard = Board(size);
+    Player newPlayer = Player(Cell.cross);
+    Game newGame = Game(newBoard, newPlayer);
+    newGame.play();
+  }
+
   void updateState() {
     if (board.checkWin(Cell.cross)) {
       state = GameState.crossWin;
@@ -94,11 +114,11 @@ class Game {
 
     print('Do u wanna play again? Press Y or any key for exit');
     var input = stdin.readLineSync()!;
-    if (input.toLowerCase() == 'y') {
-      state = GameState.playing;
-      play();
-    }
 
-    print('Bye, bye!');
+    if (input.toLowerCase() == 'y') {
+      newGame();
+    } else {
+      print('Bye, bye!');
+    }
   }
 }
