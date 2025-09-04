@@ -39,12 +39,8 @@ class Board {
     }
   }
 
-  bool isCellEmpty(int x, int y) {
-    return cells[y][x] == Cell.empty;
-  }
-
   bool setSymbol(int x, int y, Cell cellType) {
-    if (isCellEmpty(x, y)) {
+    if (cells[y][x] == Cell.empty) {
       cells[y][x] = cellType;
       return true;
     }
@@ -103,7 +99,6 @@ class Board {
 
     return false;
   }
-
 
   bool _checkDiagonals(
     Cell player,
